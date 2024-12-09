@@ -1,16 +1,18 @@
-PROJECT_DIR ?= detection_site
+PROJECT_DIR ?= contextly
 install:
 	python -m ensurepip --upgrade
 	python -m pip install --upgrade setuptools
+    pip install uv
 	pip install -r requirements.txt
 run:
-	cd $(PROJECT_DIR) && python manage.py migrate
-	cd $(PROJECT_DIR) && python manage.py runserver
+	echo "install"
 lint:
+	echo "Start lint"
 	cd $(PROJECT_DIR) && black .
 
 isort:
-	cd $(PROJECT_DIR) && isort .
+	echo "Start isort"
+	cd $(PROJECT_DIR) && black .
 
 format: lint isort
-	echo "Done"
+	echo "Format Done"

@@ -1,0 +1,21 @@
+[project]
+name = "contextly"
+version = "0.0.1"
+
+authors = [
+    { name = "Ivan Baklanov", email = "ivanbaklan@gmail.com" },
+]
+
+requires-python = "==3.12.*"
+
+dependencies = [
+    "loguru==0.7.3",
+]
+
+
+[dependency-groups]
+dev = [
+    "black==24.10.0",
+    "isort==5.13.2",
+    "pytest==8.3.*",
+]
