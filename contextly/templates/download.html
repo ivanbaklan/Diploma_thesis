@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="container col-md-6 mt-5">
+        <h2 class="text-center">Download</h2>
+        {% if info %}
+        <div class="alert alert-info" role="alert">
+        {{ info }}
+            {% if info_url %}
+            <a href="{{info_url}}">Video</a>
+            {% endif %}
+        </div>
+        {% endif %}
+        <form action="/video/download" method="post">
+            <div class="mb-3">
+                <label for="url" class="form-label">Youtube video url</label>
+                <input type="text" class="form-control" id="url" name="url" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Download</button>
+        </form>
+    </div>
+{% endblock content %}

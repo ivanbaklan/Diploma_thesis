@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}
+    <title>{{ title }}</title>
+{% endblock title %}
+{% block head %}
+    <meta http-equiv="refresh" content="5">
+{% endblock head %}
+{% block content %}
+<div class="container my-5">
+        <h1 class="text-center mb-4">Videos</h1>
+        <div class="row row-cols-1 row-cols-md-6 g-4">
+            {% for video in videos%}
+            <div class="col">
+                <div class="card h-100">
+                    <img src="/static/thumbnail/{{video.id}}" class="card-img-top" alt="Product Image">
+                    <div class="card-body">
+                        <h6 class="card-title">{{video.title[0:30]}} ...</h6>
+                        <p class="card-text"></p>
+                        <p class="card-text">status: {{video.status}}</p>
+                        <a href="/video/download_list/{{video.id}}" class="btn btn-primary">Open</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor%}
+        </div>
+    </div>
+{% endblock content %}
