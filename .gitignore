@@ -157,3 +157,6 @@ npm-debug.log.*
 
 # asdf
 .tool-versions
+
+# ml models
+contextly/utils/saved_model

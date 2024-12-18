@@ -19,6 +19,9 @@
                 <h2 class="fw-bold">{{video.title}}</h2>
                 <p class="text-muted">status: {{video.status}}</p>
                 <p class="mt-4">description: {{video.description[0:350]}}...</p>
+                <form action="/video/delete/{{video.id}}" method="POST">
+                    <td><button type="submit" class="btn btn-danger">Delete</button></td>
+                </form>
             </div>
         </div>
         <div class="mt-5">

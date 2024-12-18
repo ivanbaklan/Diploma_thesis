@@ -1,9 +1,10 @@
 import asyncio
+import shutil
 import uuid
 from typing import Annotated, Optional
 
-from fastapi import APIRouter, Form, Request
-from fastapi.responses import HTMLResponse
+from fastapi import APIRouter, Form, Request, status
+from fastapi.responses import HTMLResponse, RedirectResponse
 
 from contextly.models.user import UserSchema
 from contextly.models.video import Video
@@ -27,7 +28,7 @@ async def download_page(
     request: Request, url: Annotated[str, Form()], user: Optional[UserSchema] = None
 ):
     context = {"title": "Download"}
-    existing_video = await Video.filter(url=url).first()
+    existing_video = await Video.filter(url=url, user_id=user.id).first()
     if existing_video:
         context["info"] = f"Video Already exist, {existing_video.title}"
         context["info_url"] = f"/video/download_list/{existing_video.id}"
@@ -55,3 +56,14 @@ async def download_page(request: Request, id: str, user: Optional[UserSchema] = 
     video = await Video.filter(id=uuid.UUID(id), user_id=user.id).first()
     context = {"video": video, "title": f"Videos {video.title}"}
     return templates.TemplateResponse(request, "video.html", context=context)
+
+
+@router.post("/delete/{id}", response_class=HTMLResponse)
+@auth_cookies
+async def download_page(request: Request, id: str, user: Optional[UserSchema] = None):
+    video = await Video.filter(id=uuid.UUID(id), user_id=user.id).first()
+    shutil.rmtree(f"downloads/{video.id}")
+    await video.delete()
+    return RedirectResponse(
+        url="/video/download_list", status_code=status.HTTP_302_FOUND
+    )
