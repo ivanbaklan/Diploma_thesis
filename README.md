@@ -5,10 +5,7 @@ Contextly решает задачу скачавания видеo с Youtube с
 - [Технологии](#технологии)
 - [Начало работы](#начало-работы)
 - [Тестирование](#тестирование)
-- [Deploy и CI/CD](#deploy-и-ci/cd)
-- [Contributing](#contributing)
 - [To do](#to-do)
-- [Команда проекта](#команда-проекта)
 
 ## Технологии
 - [Docker](https://www.docker.com/)
@@ -64,6 +61,7 @@ Diploma_thesis/
 └── uv.lock                            # Файл фиксации зависимостей проекта
 ```
 
+## Начало работы
 Запуск из папки 
 ```sh
 $ make install
@@ -74,3 +72,23 @@ $ make run
 $ make docker
 $ make docker_run
 ```
+![Project Screenshot 1](images/1.png)
+![Project Screenshot 2](images/2.png)
+![Project Screenshot 3](images/3.png)
+![Project Screenshot 4](images/4.png)
+![Project Screenshot 5](images/5.png)
+![Project Screenshot 6](images/6.png)
+![Project Screenshot 7](images/7.png)
+![Project Screenshot 8](images/8.png)
+
+## Тестирование
+```sh
+$ make test
+```
+
+## TO DO
+- Дообучение или замена модели сумаризатора
+- Реализация горизантального расштрения с использование мredis
+- Добавление nginx сервера для отдачи статики
+- Добавление README.md на английском языке и поддержки нескольких языков
+- Добавление API для телеграмм бота
