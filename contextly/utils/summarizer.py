@@ -8,15 +8,34 @@ from contextly.settings import logger
 
 
 class Summarizer:
+    """
+    Summarizer class for generating text summaries using a pre-trained T5 model.
+
+    This class provides methods to load a summarization model and generate summaries
+    for input text. It supports chunking long text into manageable pieces for processing.
+    """
+
     def __init__(self):
         self.model_path = "contextly/utils/saved_model"
         self.max_chunk_length = 700
 
     async def load_model(self):
+        """
+        Wrapper for load the summarization model asynchronously.
+
+        :return: None
+        """
+
         loop = asyncio.get_event_loop()
         await loop.run_in_executor(None, self._load_model)
 
     def _load_model(self):
+        """
+        Load the summarization model.
+
+        :return: None
+        """
+
         logger.info("Init Summarizer model")
         model_path = Path(self.model_path)
         if model_path.exists():
@@ -37,12 +56,25 @@ class Summarizer:
             self.tokenizer.save_pretrained(self.model_path)
 
     async def get_summary(self, text: str) -> str:
+        """
+        Wrapper for generate a summary for the given text asynchronously.
+
+        :param text: (str) The input text to summarize.
+        :return: (str) The generated summary.
+        """
+
         loop = asyncio.get_event_loop()
         summary = await loop.run_in_executor(None, self._get_summary, text)
         return summary
-        # return await asyncio.to_thread(self._get_summary, text)
 
     def _get_summary(self, text: str) -> str:
+        """
+        Generate a summary for the given text
+
+        :param text: (str) The input text to summarize.
+        :return: (str) The generated summary.
+        """
+
         result = []
         chunks = wrap(text, self.max_chunk_length)
         for i, chunk in enumerate(chunks):

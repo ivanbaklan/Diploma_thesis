@@ -13,14 +13,24 @@ from contextly.utils.transcriber import Transcriber
 
 
 class YouTubeDl:
+    """
+    Class YouTubeDl download a video and its thumbnail,
+    extract audio, transcribe, and summarize content.
+    """
+
     def __init__(self, chunk_duration: int = 600):
         self.chunk_duration = chunk_duration
 
     @staticmethod
     async def get_video_duration(video_path: str) -> float:
         """
-        Получить длительность видео в секундах.
+        This function uses ffmpeg to probe the provided video
+        file and extracts its duration in seconds.
+
+        :param video_path: (str) Path to video file.
+        :return (float) duration in seconds.
         """
+
         probe = ffmpeg.probe(video_path)
         return float(probe["format"]["duration"])
 
@@ -28,8 +38,17 @@ class YouTubeDl:
         self, start_time: int, video_path: str, output_path: str
     ) -> None:
         """
-        Processing a single chunk of audio.
+        Process a single chunk of audio from a video file.
+        This function extracts a specific chunk of audio from the input video file
+        starting at the given time and saves it to the specified output path in MP3 format.
+        The chunk duration is determined by the `self.chunk_duration` attribute.
+
+        :param start_time: (int) The start time of the audio chunk in seconds.
+        :param video_path: (str) The path to the input video file.
+        :param output_path: (str) The path to save the extracted audio file.
+        :return None
         """
+
         await asyncio.to_thread(
             lambda: ffmpeg.input(video_path, ss=start_time, t=self.chunk_duration)
             .output(output_path, format="mp3", **{"q:a": 0})
@@ -39,11 +58,12 @@ class YouTubeDl:
 
     async def split_audio(self, video_path: str, output_path: str) -> list:
         """
-        Extract audio use chunks.
+        Split a video's audio into chunks and save them as separate files.
 
-        :param video_path: Path to video file.
-        :param output_path: Path to save audio,
+        :param video_path: (str) Path to video file.
+        :param output_path: (str) Path to save audio,
         """
+
         os.mkdir(output_path)
         total_duration = await self.get_video_duration(video_path)
         num_chunks = math.ceil(total_duration / self.chunk_duration)
@@ -61,6 +81,13 @@ class YouTubeDl:
         return files
 
     def dl_progress_hook(self, data: dict) -> None:
+        """
+        Synchronous function for handling video processing progress callback
+
+        :param data: (dict) video processing progress
+        :return: None
+        """
+
         dl_progress = 0
         try:
             if data["status"] == "downloading" and data["total_bytes"] > 0:
@@ -79,6 +106,13 @@ class YouTubeDl:
 
     @staticmethod
     async def async_dl_progress_hook(info: dict) -> None:
+        """
+        Processing video processing progress and saving status
+
+        :param info: (dict) processing data
+        :return: None
+        """
+
         uuid_pattern = r"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}"
         id = re.findall(uuid_pattern, info["filename"])[0]
         video = await Video.filter(id=id).first()
@@ -91,6 +125,19 @@ class YouTubeDl:
         await video.save()
 
     async def download_video_with_async_hook(self, video: Video) -> None:
+        """
+        Download a video and its thumbnail, extract audio, transcribe, and summarize content.
+
+        This function handles the entire video processing pipeline, which includes:
+        - Downloading the video and its thumbnail using `YoutubeDL`.
+        - Extracting audio from the downloaded video and splitting it into chunks.
+        - Transcribing the audio into text.
+        - Summarizing the transcribed text into a concise description.
+
+        :param video: (Video) item of db model
+        :return: None
+        """
+
         options = {
             "quiet": True,
             "format": "bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4",

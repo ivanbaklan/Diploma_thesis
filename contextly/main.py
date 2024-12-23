@@ -31,10 +31,23 @@ app.include_router(video_router)
 
 @app.get("/", response_class=HTMLResponse)
 async def main_page(request: Request):
+    """
+    Renders the main page of the application.
+
+    :param request: (Request): The HTTP request object.
+    :return: HTMLResponse: The rendered main page (`index.html`) template with the context.
+    """
+
     context = {"title": "Main"}
     return templates.TemplateResponse(request, "index.html", context=context)
 
 
 @app.get("/favicon.ico", include_in_schema=False)
 async def favicon():
+    """
+    Returns the favicon of the application.
+
+    :return:  FileResponse: The favicon.ico file.
+    """
+
     return FileResponse("contextly/favicon.ico")
